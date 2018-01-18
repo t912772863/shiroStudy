@@ -1,0 +1,10 @@
+一. javaSE环境搭建shiro框架
+1. 导入与shiro相关的jar包
+2. 配置文件, 临时存储文件
+    shiro.ini文件, 用来存储用户名密码, 角色, 权限等
+    格式: 用户名=密码, 角色1, 角色2, 角色3
+    角色=权限
+
+二. springmvc与shiro的集成
+1. 搭建springmvc环境
+2. 集成shiro框架
