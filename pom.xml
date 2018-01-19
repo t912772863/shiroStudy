@@ -11,6 +11,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>4.1.7.RELEASE</spring.version>
+        <log4j.version>1.2.17</log4j.version>
+        <slf4j.version>1.7.5</slf4j.version>
     </properties>
 
     <dependencies>
@@ -20,11 +22,15 @@
             <version>1.0-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
                 </exclusion>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
@@ -123,13 +129,6 @@
             <version>5.1.34</version>
         </dependency>
 
-        <!-- log4j -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-
         <!-- servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -179,10 +178,6 @@
                     <artifactId>slf4j-api</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
             </exclusions>
         </dependency>
         <!--hibernate 缓存框架-->
@@ -196,13 +191,38 @@
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-
         </dependency>
 
+        <!--jar包冲突, 排除所有相关, 这里统一引用-->
         <dependency>
-            <artifactId>slf4j-log4j12</artifactId>
             <groupId>org.slf4j</groupId>
-            <version>1.6.1</version>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
         </dependency>
     </dependencies>
 
