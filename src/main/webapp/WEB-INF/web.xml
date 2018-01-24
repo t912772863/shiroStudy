@@ -37,7 +37,10 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-    <!--配置了一个代理类-->
+    <!--配置了一个代理类
+      用来到spring容器中找与这个filtername相同的实例, 这里用的是shiro,也可以在配置文件中配置其它安全框架的实例bean
+      这也就是这里的name要和xml文件中配置的bean的id一致的原因.
+    -->
    <filter>
         <filter-name>shiroFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>

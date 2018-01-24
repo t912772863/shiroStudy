@@ -24,30 +24,24 @@
 	<!--<bean id="exceptionHandler" class="com.tian.happyfood.controller.common.DefaultExceptionHandler"/>-->
 
 	<!-- 加载数据源1 -->
-	<!--<bean id="dbcpdatasource" class="org.apache.commons.dbcp.BasicDataSource">
+	<bean id="dbcpdatasource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="username" value="${data_source_username}"></property>
 		<property name="password" value="${data_source_password}"></property>
 		<property name="url" value="${data_source_url}"></property>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-		&lt;!&ndash;池启动时创建的连接数&ndash;&gt;
 		<property name="initialSize" value="1"></property>
-		&lt;!&ndash;最大连接数, 设为0表示不限制&ndash;&gt;
 		<property name="maxActive" value="20"></property>
-		&lt;!&ndash;最多不释放的空闲连接&ndash;&gt;
 		<property name="maxIdle" value="2"></property>
-		&lt;!&ndash;同一时间能够分配的preparedStatement数量&ndash;&gt;
 		<property name="maxOpenPreparedStatements" value="5"></property>
-		&lt;!&ndash;获取连接时最大等待时间, -1表示无限等待&ndash;&gt;
 		<property name="maxWait" value="60"></property>
-	</bean>-->
+	</bean>
 
-	<!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dbcpdatasource" />
-		<property name="mapperLocations" value="classpath:com/tian/happyfood/dao/mapper/*.xml"></property>
-		&lt;!&ndash;添加一个mybatis插件实现不同数据库的默认分页&ndash;&gt;
-		&lt;!&ndash;<property name="plugins">
+		<property name="mapperLocations" value="classpath:com/tian/shirostudy/dao/mapper/*.xml"></property>
+		<property name="plugins">
 			<array>
-				<bean class="com.tian.happyfood.dao.common.PageInterceptor">
+				<bean class="com.tian.shirostudy.common.PageInterceptor">
 					<property name="properties">
 						<value>
 							property-key=property-value
@@ -55,13 +49,13 @@
 					</property>
 				</bean>
 			</array>
-		</property>&ndash;&gt;
-	</bean>-->
+		</property>
+	</bean>
 
 	<!--加载dao层 -->
-	<!--<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.tian.happyfood.dao.mapper"></property>
-	</bean>-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.tian.shirostudy.dao.mapper"></property>
+	</bean>
 
 	<!-- 组件扫描 加载dao,service和Controller -->
 	<context:component-scan base-package="com.tian.shirostudy"></context:component-scan>
@@ -114,12 +108,12 @@
 	<mvc:default-servlet-handler/>
 
 	<!-- 配置事务 -->
-	<!--<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dbcpdatasource"  />
-	</bean>-->
+	</bean>
 
 	<!-- 自动注入事物,也就是@Transaction注解的处理器-->
-	<!--<tx:annotation-driven transaction-manager="transactionManager" />-->
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<task:annotation-driven />
 
@@ -171,8 +165,6 @@
 		<property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
 	</bean>
 
-	<bean id="jdbcRealm" class="com.tian.shirostudy.ShiroRealm"></bean>
-
 	<!--这个bean用来管理spring容器中, shiro常用的对象-->
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 
@@ -197,10 +189,13 @@
 		<!--我们要完成的shiro过滤器的具体配置
 			anon, 未授权就可以访问的
 			authc, 认证后才可访问的资源
+			有多个匹配规则符合时, 按第一个的权限处理
 		-->
 		<property name="filterChainDefinitions">
 			<value>
 				/login.jsp = anon
+				/login = anon
+				/logout = logout
 				/** = authc
 			</value>
 		</property>

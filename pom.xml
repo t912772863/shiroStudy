@@ -227,4 +227,31 @@
     </dependencies>
 
 
+    <build>
+        <plugins>
+            <!--这个插件用来生成mybatis对就的实体和xml,mapper文件-->
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <overwrite>true</overwrite>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <!--下面这个配置是默认idea不会打包java文件夹内的xml文件,这就会出现mybatis的xml文件无法加载的问题
+            加上下面这个配置,就会像在eclipse中一样在打包的时候把xml文件也打进对应的路径中去.
+        -->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
 </project>

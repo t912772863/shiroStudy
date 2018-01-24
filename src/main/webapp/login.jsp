@@ -12,6 +12,12 @@
 </head>
 <body>
 <h1>这是一个登录页面</h1>
+<form action="./login">
+    用户名: <input type="text"><br/>
+    密码:<input type="password">
+    <input type="submit">
+
+</form>
 
 </body>
 </html>
