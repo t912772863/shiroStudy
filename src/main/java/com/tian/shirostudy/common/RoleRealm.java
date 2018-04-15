@@ -1,38 +1,49 @@
 package com.tian.shirostudy.common;
 
 import com.tian.shirostudy.dao.entity.Account;
+import com.tian.shirostudy.dao.entity.Role;
 import com.tian.shirostudy.service.AccountService;
+import com.tian.shirostudy.service.RoleService;
 import org.apache.shiro.authc.*;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthenticatingRealm;
+import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
- * 需要查询数据库, 并得到正确的数据
- * Created by Administrator on 2018/1/17 0017.
+ * Created by Administrator on 2018/4/15 0015.
  */
-@Component("jdbcRealm")
-public class ShiroRealm extends AuthenticatingRealm {
+@Component("roleRealm")
+public class RoleRealm extends AuthorizingRealm {
+    @Autowired
+    private RoleService roleService;
     @Autowired
     private AccountService accountService;
 
-    public ShiroRealm(){
-        super();
-        // 设置加密器, 也可以不用, 加密器用MD5算法, 加密3次,(这里设置的加密会对登录的用户密码进行该规则加密, 再与数据库
-        // 查询出来的结果进行对比.也就是适用于, 接口传的是明文, 数据库存的是密文)
-        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher("MD5");
-        hashedCredentialsMatcher.setHashIterations(3);
-        this.setCredentialsMatcher(hashedCredentialsMatcher);
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        SimpleAuthorizationInfo info = null;
+        //        // 3. 调用数据库方法, 是否存在指定用户
+        Account account = accountService.queryByUsername(principalCollection.toString());
+        if(account == null){
+            return null;
+        }
+        List<Role> roleList = roleService.queryByAccountId(account.getId());
+        Set<String> roles = new HashSet<String>();
+        for(Role r: roleList){
+            roles.add(r.getName());
+        }
+        info = new SimpleAuthorizationInfo(roles);
+        return info;
     }
 
-    /**
-     * 获取认证消息, 如果数据库中没有数据, 返回null, 如果得到正确的用户名和密码, 返回指定类型的对象.
-     * @param authenticationToken
-     * @return
-     * @throws AuthenticationException
-     */
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         // 1. 将token转换成UsernamePasswordToken类型
         UsernamePasswordToken token = (UsernamePasswordToken)authenticationToken;
@@ -49,4 +60,5 @@ public class ShiroRealm extends AuthenticatingRealm {
         ByteSource byteSource = ByteSource.Util.bytes(account.getUsername());
         return new SimpleAuthenticationInfo(account.getUsername(),account.getPassword(),byteSource,this.getName());
     }
+
 }

@@ -9,4 +9,48 @@
 1. 搭建springmvc环境
 2. 集成shiro框架
 
+------------------------
+shiro框架核心配置: spring的配置文件中配置一个bean,org.apache.shiro.spring.web.ShiroFilterFactoryBean
+web.xml为什么还要配置一个DelegatingFilterProxy.
+DelegatingFilgerProxy: 用来到spring容器中,找与filter-name相同名字的bean实例.
+        // 存储即将获取的shiro过滤器的id的值, 如果没有指定这个targetBeanName, 会加载哪个spring bean实例?
+           private String targetBeanName;
+
+        // 获取spring中shiro的核心过滤器
+        private volatile Filter delegate;
+        initFilterBean方法: 获取指定id值, 如果没有指定, 自动去寻找与filtername一致的bean实例
+                        IOC容器找bean实例, delegate属性当中
+
+DelegatingFilterProxy: servlet容器与IOC容器的关联的.
+
+
+---
+URL匹配顺序
+URL采用第一次匹配优先的方式,即从开关开始使用第一个匹配的url模式对应的拦截器链.
+
+
+---
+认证策略, shiro在认证的过程中, 如何识别认证成功
+两个realm, 当有多个数据源的时候,
+1. 多个realm认证, 只要有一个认证成功, 就算成功.
+2. 多个realm认证, 全部认证成功, 才算成功.
+
+---
+授权: 哪一个用户可以访问哪一个资源
+shiro支持三种方式的授权:
+1.编程式, 通过if else授权代码块完成
+2.注解式: 通过在执行的java方法上旋转相应的注解完成, 没有权限将拋出相应的异常
+3.jsp/gsp标签, 通过要页面中添加xml标签的方式完成
+
+1, IOC配置文件中配置哪些角色可以访问哪些资源, roles拦截器, roles[角色]
+    /admin.jsp = roles[admin]
+        --登录的用户如果拥有admin角色则可以访问admin.jsp
+
+2. 一个用户进行登录, 认证成功以后, 最终还是会查找认证成功的用户拥有什么样的角色.
+    realm可以帮我们与数据库进行交互, 获取指定认证成功的用户对应的角色.
+        自定义一个realm,继承AuthorizingRealm, 认证和授权工作.
+        IOC容器当中配置指定realm的bean实例
+        告知securityManager使用哪一个授权管理器
+
+
 

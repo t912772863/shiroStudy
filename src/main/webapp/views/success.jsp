@@ -11,13 +11,8 @@
     <title>Title</title>
 </head>
 <body>
-<h1>这是一个登录页面</h1>
-<form action="login">
-    用户名: <input name="username" type="text"><br/>
-    密码:<input name="password" type="password">
-    <input type="submit">
-
-</form>
-
+<h1>这是登录成功页面</h1>
+<div><a href="admin">admin</a></div>
+<div><a href="user">user</a></div><div><a href="logout2">退出登录</a></div>
 </body>
 </html>

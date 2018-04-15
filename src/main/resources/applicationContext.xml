@@ -98,7 +98,7 @@
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<!--配置返回jsp页面的路径的前缀和后缀,这样可以在controller中的ModelAndView中setview时少写一些代码 -->
 		<property name="prefix" value="/views/"></property>
-		<property name="suffix" value=".html"></property>
+		<property name="suffix" value=".jsp"></property>
 	</bean>
 
 
@@ -157,8 +157,27 @@
 	-->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="cacheManager" ref="cacheManager"/>
-		<property name="realm" ref="jdbcRealm"/>
+		<property name="authorizer" ref="authorizer"/>
+		<property name="authenticator" ref="authenticator"/>
 	</bean>
+	<bean id="authorizer" class="org.apache.shiro.authz.ModularRealmAuthorizer">
+		<property name="realms">
+			<list>
+				<ref bean="jdbcRealm"/>
+				<ref bean="roleRealm"/>
+			</list>
+		</property>
+	</bean>
+	<bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+		<property name="realms">
+			<list>
+				<ref bean="jdbcRealm"/>
+				<!--这里还可以配置多个jdbcRealm-->
+			</list>
+		</property>
+	</bean>
+
+
 
 	<!--hibernate缓存框架-->
 	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
@@ -182,9 +201,9 @@
 	<!--配置shiro过滤器-->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager"/>
-		<property name="loginUrl" value="/login.jsp"/>
-		<property name="successUrl" value="/success.jsp"/>
-		<property name="unauthorizedUrl" value="/abc.jsp"/>
+		<property name="loginUrl" value="/views/login.jsp"/>
+		<property name="successUrl" value="/views/success.jsp"/>
+		<property name="unauthorizedUrl" value="/views/unauthorized.jsp"/>
 
 		<!--我们要完成的shiro过滤器的具体配置
 			anon, 未授权就可以访问的
@@ -193,9 +212,10 @@
 		-->
 		<property name="filterChainDefinitions">
 			<value>
-				/login.jsp = anon
-				/login = anon
-				/logout = logout
+				/login* = anon
+				/logout* = logout
+				/admin* = roles[admin]
+				/user* = roles[user]
 				/** = authc
 			</value>
 		</property>
