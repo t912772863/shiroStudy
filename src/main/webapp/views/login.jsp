@@ -12,7 +12,7 @@
 </head>
 <body>
 <h1>这是一个登录页面</h1>
-<form action="login">
+<form action="../login">
     用户名: <input name="username" type="text"><br/>
     密码:<input name="password" type="password">
     <input type="submit">

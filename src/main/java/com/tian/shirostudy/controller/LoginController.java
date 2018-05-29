@@ -32,6 +32,7 @@ public class LoginController extends BaseController{
                 currentUser.login(token);
             }catch (AuthenticationException e){
                 e.printStackTrace();
+                currentUser.logout();
                 throw new BusinessException(500, "用户名密码错误");
             }
         }
